@@ -19,14 +19,12 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install npm Dependencies
+        run: |
+          npm install @playwright/test @google/gemini-cli
+
       - name: Install Playwright Browsers (Required for the Agent)
         run: npx playwright install --with-deps chromium
-
-      # Note: This assumes you have installed the gemini CLI globally or locally in your project
-      # If it's a python or go package, add the setup module here (e.g., setup-python)
-      - name: Install Gemini CLI
-        run: |
-          npm install -g @google/gemini-cli
 
       - name: Run Gemini Browser Tests
         env:
@@ -38,7 +36,7 @@ jobs:
             exit 1
           fi
 
-          gemini --prompt "
+          npx gemini --prompt "
           Execute the following automated UI test cases for the B4iGo Web application.
           Use your Browser tool in HEADLESS mode. Execute the steps as quickly and efficiently as possible. Do not write Playwright code; perform the clicks and inputs directly.
 
