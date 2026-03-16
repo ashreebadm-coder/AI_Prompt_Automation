@@ -74,4 +74,11 @@ jobs:
           **Final Actions:**
           1. Generate a final execution report.
           2. Once the final report is generated, gracefully end your browser session / close the browser.
-          "
+          " | tee test-report.txt
+
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gemini-test-report
+          path: test-report.txt
