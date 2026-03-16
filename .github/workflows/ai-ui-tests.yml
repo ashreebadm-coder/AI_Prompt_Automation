@@ -30,16 +30,21 @@ jobs:
 
       - name: Run Gemini Browser Tests
         env:
-          API_KEY: ${{ secrets.API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.API_KEY }} # Protect your API key in GitHub Secrets!
+          GEMINI_API_KEY: ${{ secrets.API_KEY }}
+          B4IGO_PRIVATE_KEY: ${{ secrets.B4IGO_PRIVATE_KEY }}
         run: |
+          if [ -z "$GEMINI_API_KEY" ] || [ -z "$B4IGO_PRIVATE_KEY" ]; then
+            echo "Missing required secrets: API_KEY and/or B4IGO_PRIVATE_KEY"
+            exit 1
+          fi
+
           gemini --prompt "
           Execute the following automated UI test cases for the B4iGo Web application.
           Use your Browser tool in HEADLESS mode. Execute the steps as quickly and efficiently as possible. Do not write Playwright code; perform the clicks and inputs directly.
 
           **Setup Instructions:**
           - Target URL: https://www.predev.b4igo.com/restore-keys-qr
-          - Private Key: 7f6ad4c810a9fdf3cfdfd8071f5acab9780d2a45dd40949a271b2bb07086e8fb
+          - Private Key: ${B4IGO_PRIVATE_KEY}
 
           **Test case 1: Add New Subscription**
           1. Navigate to the Target URL and restore access using the provided Private Key. Log in.
