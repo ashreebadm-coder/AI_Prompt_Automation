@@ -1,0 +1,71 @@
+name: AI Browser E2E Tests
+
+# Trigger the test manually or every time code is pushed to the main branch
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  run-ai-tests:
+    runs-on: ubuntu-latest # You can also use windows-latest if your CLI requires Windows
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (for Playwright/MCP dependencies)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright Browsers (Required for the Agent)
+        run: npx playwright install --with-deps chromium
+
+      # Note: This assumes you have installed the gemini CLI globally or locally in your project
+      # If it's a python or go package, add the setup module here (e.g., setup-python)
+      - name: Install Gemini CLI
+        run: |
+          npm install -g gemini-cli-or-package-name # Replace with how you install your gemini CLI
+
+      - name: Run Gemini Browser Tests
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # Protect your API key in GitHub Secrets!
+        run: |
+          gemini --prompt "
+          Execute the following automated UI test cases for the B4iGo Web application.
+          Use your Browser tool in HEADLESS mode. Execute the steps as quickly and efficiently as possible. Do not write Playwright code; perform the clicks and inputs directly.
+
+          **Setup Instructions:**
+          - Target URL: https://www.predev.b4igo.com/restore-keys-qr
+          - Private Key: 7f6ad4c810a9fdf3cfdfd8071f5acab9780d2a45dd40949a271b2bb07086e8fb
+
+          **Test case 1: Add New Subscription**
+          1. Navigate to the Target URL and restore access using the provided Private Key. Log in.
+          2. Click on the 'Digital | Online Accounts Vault' card.
+          3. Open the 'My Subscriptions' tab.
+          4. Click the 'Add +' button.
+          5. Fill the subscription form with the following exact data:
+             - Subscription Type: 'Others'
+             - Service Name: 'AutomatedTestFi'
+             - Username/Email: 'auto@test.com'
+          6. Submit the form to save.
+          7. Verification: Verify that 'AutomatedTestFi' now appears in the My Subscriptions table.
+
+          **Test case 2: Edit Subscription**
+          1. In the My Subscriptions table, locate 'AutomatedTestFi' and click its Manage (Gear) icon.
+          2. Click the Edit (pencil) icon.
+          3. Change the Service Name to 'AutomatedTestFi Edited'.
+          4. Submit the changes.
+          5. Verification: Verify that the table now displays 'AutomatedTestFi Edited'.
+
+          **Test case 3: Delete Subscription**
+          1. Click the Manage (Gear) icon for 'AutomatedTestFi Edited'.
+          2. Click the Delete (trash) icon.
+          3. Confirm the deletion in the popup.
+          4. Verification: Verify that the record is no longer visible in the table.
+
+          **Final Actions:**
+          1. Generate a final execution report.
+          2. Once the final report is generated, gracefully end your browser session / close the browser.
+          "
