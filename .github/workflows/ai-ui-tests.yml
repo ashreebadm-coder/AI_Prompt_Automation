@@ -26,7 +26,7 @@ jobs:
       # If it's a python or go package, add the setup module here (e.g., setup-python)
       - name: Install Gemini CLI
         run: |
-          npm install -g gemini-cli-or-package-name # Replace with how you install your gemini CLI
+          npm install -g @google/gemini-cli
 
       - name: Run Gemini Browser Tests
         env:
