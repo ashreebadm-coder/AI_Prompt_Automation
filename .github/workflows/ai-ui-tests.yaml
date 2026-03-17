@@ -31,58 +31,62 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.API_KEY }}
           B4IGO_PRIVATE_KEY: ${{ secrets.B4IGO_PRIVATE_KEY }}
         run: |
+          : > test-report.txt
+
           if [ -z "$GEMINI_API_KEY" ] || [ -z "$B4IGO_PRIVATE_KEY" ]; then
             echo "Missing required secrets: API_KEY and/or B4IGO_PRIVATE_KEY"
+            echo "RESULT: FAIL" > test-report.txt
+            echo "Missing required secrets: API_KEY and/or B4IGO_PRIVATE_KEY" >> test-report.txt
             exit 1
           fi
 
           # Run Gemini, preserve its exit code, and publish a PASS/FAIL summary.
           set +e
-           PROMPT=$(cat <<EOF
-           --------
-           Need help in testing B4iGo Web application.
+          PROMPT=$(cat <<EOF
+--------
+Need help in testing B4iGo Web application.
 
-           Also go through the base-code to understand the context.
-           Do not generate Playwright code, execute in browser in headed mode.
+Also go through the base-code to understand the context.
+Do not generate Playwright code, execute in browser in headed mode.
 
-           I want you to understand everything so that you can test B4iGo application and give me a report based on the test cases below.
+I want you to understand everything so that you can test B4iGo application and give me a report based on the test cases below.
 
-           Test case 1: Add New Subscription
-           In the Chrome web browser, open URL: https://www.predev.b4igo.com/restore-keys-qr
+Test case 1: Add New Subscription
+In the Chrome web browser, open URL: https://www.predev.b4igo.com/restore-keys-qr
 
-           Private Key: ${B4IGO_PRIVATE_KEY}
+Private Key: ${B4IGO_PRIVATE_KEY}
 
-           1. Login to the B4igo application using the private key given.
-           2. Click Digital Vault card.
-           3. Verify Digital Vault page is loaded.
-           4. Open My Subscriptions.
-           5. Add a new Subscription record.
-           6. Verify the subscription is added successfully.
+1. Login to the B4igo application using the private key given.
+2. Click Digital Vault card.
+3. Verify Digital Vault page is loaded.
+4. Open My Subscriptions.
+5. Add a new Subscription record.
+6. Verify the subscription is added successfully.
 
-           Test case 2: Edit Subscription
-           1. Open the existing Subscription record created in Test case 1.
-           2. Edit the Subscription details.
-           3. Save changes.
-           4. Verify the subscription is updated successfully.
+Test case 2: Edit Subscription
+1. Open the existing Subscription record created in Test case 1.
+2. Edit the Subscription details.
+3. Save changes.
+4. Verify the subscription is updated successfully.
 
-           Test case 3: Delete Subscription
-           1. Open the existing Subscription record updated in Test case 2.
-           2. Delete the Subscription record.
-           3. Confirm delete action.
-           4. Verify the subscription is deleted successfully.
+Test case 3: Delete Subscription
+1. Open the existing Subscription record updated in Test case 2.
+2. Delete the Subscription record.
+3. Confirm delete action.
+4. Verify the subscription is deleted successfully.
 
-           Generate final report in this format:
-           - Test case name
-           - Steps executed
-           - Expected result
-           - Actual result
-           - Status (Pass/Fail)
-           - Failure reason (if any)
-           - Close the Browser
+Generate final report in this format:
+- Test case name
+- Steps executed
+- Expected result
+- Actual result
+- Status (Pass/Fail)
+- Failure reason (if any)
+- Close the Browser
 
-           After generating the report, close the browser.
-           --------
-          EOF
+After generating the report, close the browser.
+--------
+EOF
           )
 
           npx gemini --prompt "$PROMPT" > gemini-output.txt 2>&1
