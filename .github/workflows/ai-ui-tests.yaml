@@ -26,6 +26,10 @@ jobs:
       - name: Install Playwright Browsers (Required for the Agent)
         run: npx playwright install --with-deps chromium
 
+      - name: Create Gemini Config Directory
+        run: |
+          mkdir -p /home/runner/.gemini
+
       - name: Run Gemini Browser Tests
         env:
           GEMINI_API_KEY: ${{ secrets.API_KEY }}
