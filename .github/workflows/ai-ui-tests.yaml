@@ -35,7 +35,7 @@ jobs:
             Need help in testing B4iGo Web application.
 
             Also go through the base-code to understand the context.
-            Do not generate Playwright code, execute in browser in headed mode.
+            Do not generate Playwright code, execute in browser in headless mode.
 
             I want you to understand everything so that you can test B4iGo application and give me a report based on the test cases below.
 
