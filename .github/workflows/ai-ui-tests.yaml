@@ -27,9 +27,7 @@ jobs:
 
       - name: Setup Gemini Environment
         run: |
-          export HOME=/home/runner
-          mkdir -p $HOME/.gemini
-          touch $HOME/.gemini/projects.json
+          mkdir -p /home/runner/.gemini
 
       - name: Run Gemini Browser Tests
         env:
@@ -40,7 +38,7 @@ jobs:
 
           # Create Gemini config in correct HOME
           mkdir -p $HOME/.gemini
-          echo "{}" > $HOME/.gemini/projects.json
+          rm -f $HOME/.gemini/projects.json
 
           : > test-report.txt
 
