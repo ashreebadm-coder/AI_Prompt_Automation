@@ -38,7 +38,7 @@ jobs:
 
           # Run Gemini, preserve its exit code, and publish a PASS/FAIL summary.
           set +e
-           PROMPT=$(cat <<EOF
+          PROMPT=$(cat <<EOF
            --------
            Need help in testing B4iGo Web application.
 
@@ -82,10 +82,10 @@ jobs:
 
            After generating the report, close the browser.
            --------
-           EOF
-           )
+          EOF
+          )
 
-           npx gemini --prompt "$PROMPT" > gemini-output.txt 2>&1
+          npx gemini --prompt "$PROMPT" > gemini-output.txt 2>&1
 
           test_exit_code=$?
           if [ $test_exit_code -eq 0 ]; then
