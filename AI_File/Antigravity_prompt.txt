@@ -1,0 +1,45 @@
+gemini —prompt <<EOF
+--------
+Need help in testing B4iGo Web application.
+
+Also go through the base-code to understand the context.
+Do not generate Playwright code, execute in browser in headed mode.
+
+I want you to understand everything so that you can test B4iGo application and give me a report based on the test cases below.
+
+Test case 1: Add New Subscription
+In the Chrome web browser, open URL: https://www.predev.b4igo.com/restore-keys-qr
+
+Private Key: 7f6ad4c810a9fdf3cfdfd8071f5acab9780d2a45dd40949a271b2bb07086e8fb
+
+1. Login to the B4igo application using the private key given.
+2. Click Digital Vault card.
+3. Verify Digital Vault page is loaded.
+4. Open My Subscriptions.
+5. Add a new Subscription record.
+6. Verify the subscription is added successfully.
+
+Test case 2: Edit Subscription
+1. Open the existing Subscription record created in Test case 1.
+2. Edit the Subscription details.
+3. Save changes.
+4. Verify the subscription is updated successfully.
+
+Test case 3: Delete Subscription
+1. Open the existing Subscription record updated in Test case 2.
+2. Delete the Subscription record.
+3. Confirm delete action.
+4. Verify the subscription is deleted successfully.
+
+Generate final report in this format:
+- Test case name
+- Steps executed
+- Expected result
+- Actual result
+- Status (Pass/Fail)
+- Failure reason (if any)
+- Close the Browser
+
+After generating the report, close the browser.
+--------
+EOF
