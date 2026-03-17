@@ -36,6 +36,8 @@ jobs:
             exit 1
           fi
 
+          # Run Gemini, preserve its exit code, and publish a PASS/FAIL summary.
+          set +e
           npx gemini --prompt "
           Execute the following automated UI test cases for the B4iGo Web application.
           Use your Browser tool in HEADLESS mode. Execute the steps as quickly and efficiently as possible. Do not write Playwright code; perform the clicks and inputs directly.
@@ -72,7 +74,19 @@ jobs:
           **Final Actions:**
           1. Generate a final execution report.
           2. Once the final report is generated, gracefully end your browser session / close the browser.
-          " | tee test-report.txt
+          " > gemini-output.txt 2>&1
+
+          test_exit_code=$?
+          if [ $test_exit_code -eq 0 ]; then
+            echo "RESULT: PASS" > test-report.txt
+          else
+            echo "RESULT: FAIL" > test-report.txt
+          fi
+
+          echo "" >> test-report.txt
+          cat gemini-output.txt >> test-report.txt
+          cat test-report.txt
+          exit $test_exit_code
 
       - name: Upload Test Report
         if: always()
