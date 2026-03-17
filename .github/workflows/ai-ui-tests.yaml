@@ -36,59 +36,27 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           B4IGO_PRIVATE_KEY: ${{ secrets.B4IGO_PRIVATE_KEY }}
         run: |
+          export HOME=/home/runner
+
+          # Create Gemini config in correct HOME
+          mkdir -p $HOME/.gemini
+          echo "{}" > $HOME/.gemini/projects.json
+
           : > test-report.txt
 
-          # Validate secrets
           if [ -z "$GEMINI_API_KEY" ] || [ -z "$B4IGO_PRIVATE_KEY" ]; then
-            echo "Missing required secrets: GEMINI_API_KEY or B4IGO_PRIVATE_KEY"
+            echo "Missing required secrets"
             echo "RESULT: FAIL" > test-report.txt
             exit 1
           fi
 
           export CI=true
-          export HOME=/home/runner
 
           PROMPT=$(cat <<EOF
-          --------
-          Need help in testing B4iGo Web application.
+          Test URL: https://www.predev.b4igo.com/restore-keys-qr
+          Private Key: ${B4IGO_PRIVATE_KEY}
 
-          Do not generate Playwright code. Execute directly in browser (headless).
-
-          Test URL:
-          https://www.predev.b4igo.com/restore-keys-qr
-
-          Private Key:
-          ${B4IGO_PRIVATE_KEY}
-
-          Test case 1: Add New Subscription
-          1. Login using private key
-          2. Click Digital Vault
-          3. Open My Subscriptions
-          4. Add new subscription
-          5. Verify record added
-
-          Test case 2: Edit Subscription
-          1. Open created record
-          2. Edit details
-          3. Save
-          4. Verify update
-
-          Test case 3: Delete Subscription
-          1. Open record
-          2. Delete it
-          3. Confirm delete
-          4. Verify removal
-
-          Generate final report with:
-          - Test case
-          - Steps
-          - Expected
-          - Actual
-          - Status
-          - Failure reason
-
-          Close browser after execution.
-          --------
+          Run all test cases and generate report.
           EOF
           )
 
@@ -103,9 +71,7 @@ jobs:
             echo "RESULT: FAIL" > test-report.txt
           fi
 
-          echo "" >> test-report.txt
           cat gemini-output.txt >> test-report.txt
-
           cat test-report.txt
 
           exit $EXIT_CODE
